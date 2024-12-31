@@ -1,0 +1,10 @@
+name: gpt-user-auth
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm
+description: GPT User Auth
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: https://www.pulumi.com/ai/api/project/43811f0a-1b48-4c31-903f-23767e913e62.zip

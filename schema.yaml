@@ -1,0 +1,184 @@
+openapi: 3.1.0
+info:
+  title: Your API
+  version: 1.0.0
+servers:
+  - url: https://yoururl.com
+    description: API Server
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+  schemas:
+    Conversation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+        summary:
+          type: string
+          description: A brief summary of the conversation
+          maxLength: 500
+        raw_text:
+          type: array
+          items:
+            type: string
+          description: Array of conversation messages
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - user_id
+        - summary
+        - raw_text
+security:
+  - ApiKeyAuth: []
+paths:
+  /auth/send-link:
+    post:
+      operationId: sendVerificationCode
+      summary: Send verification code via email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+              required:
+                - email
+      responses:
+        '200':
+          description: Code sent successfully
+        '400':
+          description: Invalid request
+        '401':
+          description: Invalid API key
+        '500':
+          description: Server error
+  /auth/verify-email:
+    post:
+      operationId: verifyCode
+      summary: Verify email with code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                code:
+                  type: string
+                  pattern: '^\d{6}$'
+              required:
+                - email
+                - code
+      responses:
+        '200':
+          description: Verification successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  userId:
+                    type: string
+                  message:
+                    type: string
+        '400':
+          description: Invalid request
+        '401':
+          description: Invalid API key
+        '500':
+          description: Server error
+  /conversations:
+    post:
+      operationId: addConversation
+      summary: Add a new conversation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                summary:
+                  type: string
+                  maxLength: 500
+                raw_text:
+                  type: array
+                  items:
+                    type: string
+              required:
+                - token
+                - summary
+                - raw_text
+      responses:
+        '201':
+          description: Conversation created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversation'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Server error
+  /conversations/list:
+    post:
+      operationId: listConversations
+      summary: List user's conversations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+              required:
+                - token
+      responses:
+        '200':
+          description: List of conversations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Conversation'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Server error
+  /privacy-policy:
+    get:
+      operationId: getPrivacyPolicy
+      summary: Get the app's privacy policy
+      security: []
+      responses:
+        '200':
+          description: Privacy policy content
+          content:
+            text/html:
+              schema:
+                type: string

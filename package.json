@@ -1,0 +1,29 @@
+{
+  "name": "gpt-user-auth",
+  "description": "GPT User Auth",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "migrate": "node-pg-migrate --migration-file-language=ts --tsconfig=tsconfig.json",
+    "compile": "tsc"
+  },
+  "author": "",
+  "dependencies": {
+    "@aws-sdk/client-ses": "^3.716.0",
+    "@pulumi/aws": "6.13.3",
+    "@pulumi/pulumi": "*",
+    "@types/jsonwebtoken": "^9.0.7",
+    "aws-lambda": "^1.0.7",
+    "axios": "^1.7.9",
+    "firebase-admin": "^13.0.2",
+    "jsonwebtoken": "^9.0.2",
+    "postgres": "^3.4.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.146",
+    "node-pg-migrate": "^7.8.0",
+    "pg": "^8.13.1"
+  }
+}
